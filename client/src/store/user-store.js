@@ -1,9 +1,16 @@
 import { defineStore } from "pinia";
-import { ref } from "vue";
+import { ref, resolveTransitionHooks } from "vue";
 import axios from "axios";
 import { v4 as uuid } from "uuid";
 import { db } from "@/firebase-init.js";
-import { setDoc, doc, getDoc, getDocs, collection } from "firebase/firestore";
+import {
+  setDoc,
+  doc,
+  getDoc,
+  getDocs,
+  collection,
+  QuerySnapshot,
+} from "firebase/firestore";
 
 export const useUserStore = defineStore(
   "user",
@@ -14,11 +21,21 @@ export const useUserStore = defineStore(
       picture: "",
       firstName: "",
       lastName: "",
+      allUsers: "",
     });
 
     const getAllUsers = async () => {
-      const quetySnapshot = await getDocs(collection(db.users));
+      const querySnapshot = await getDocs(collection(db, "users"));
       let results = [];
+      querySnapshot.forEach((doc) => results.push(doc.data()));
+
+      if (results.length) {
+        userInfo.value.allUsers = [];
+        results.forEach((res) => {
+          userInfo.value.allUsers.push(res);
+        });
+      }
+      console.log(userInfo.value.allUsers);
     };
 
     const getUserDetailsFromGoogle = async (data) => {
@@ -73,6 +90,7 @@ export const useUserStore = defineStore(
       getUserDetailsFromGoogle,
       logout,
       userInfo,
+      getAllUsers,
     };
   },
   {

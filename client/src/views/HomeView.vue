@@ -71,7 +71,7 @@ import AccountGroupIcon from "vue-material-design-icons/AccountGroup.vue";
 import DotsVerticalIcon from "vue-material-design-icons/DotsVertical.vue";
 import MagnifyIcon from "vue-material-design-icons/Magnify.vue";
 import { useUserStore } from "../store/user-store";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
@@ -79,11 +79,15 @@ const router = useRouter();
 let open = ref(true);
 let showFindFiends = ref(false);
 
+onMounted(async () => {
+  await getAllUsers();
+});
+
 const handlelogout = () => {
   let res = confirm("Are you sure you want to logout?");
   if (res) logout();
   router.push("/login");
 };
 
-const { userInfo, logout } = useUserStore();
+const { userInfo, logout, getAllUsers } = useUserStore();
 </script>
