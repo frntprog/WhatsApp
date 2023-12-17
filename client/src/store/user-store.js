@@ -21,7 +21,7 @@ export const useUserStore = defineStore(
       picture: "",
       firstName: "",
       lastName: "",
-      allUsers: "",
+      allUsers: [],
     });
 
     const getAllUsers = async () => {

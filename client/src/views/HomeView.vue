@@ -79,8 +79,13 @@ const router = useRouter();
 let open = ref(true);
 let showFindFiends = ref(false);
 
-onMounted(async () => {
-  await getAllUsers();
+onMounted(() => {
+  try {
+    console.log("mount");
+    getAllUsers();
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 const handlelogout = () => {
