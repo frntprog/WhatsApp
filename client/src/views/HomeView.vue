@@ -20,6 +20,7 @@
         >
           <MagnifyIcon fillColor="#515151" :size="18" class="ml-2" />
           <input
+            @click="showFindFiends = !showFindFiends"
             class="ml-5 appearance-none w-full bg-[#F0F0F0] py-1.5 px-2.5 text-gray-700 leading-light focus:outline-none placeholder:text-sm placeholder::text-gray-500"
             autocomplete="off"
             placeholder="Start a new chat"
@@ -28,11 +29,11 @@
         </div>
       </div>
     </div>
-    <div v-if="showFindFiends"><ChatsView class="mt-[100px]" /></div>
+    <div v-if="showFindFiends"><FindFriendsView class="pt-28" /></div>
     <div v-else>
-      <FindFriendsView class="pt-28" />
+      <ChatsView class="mt-[100px]" />
     </div>
-    <div v-if="open">
+    <div v-if="userDataForChat.length">
       <MessageView />
     </div>
     <div v-else>
@@ -71,18 +72,20 @@ import AccountGroupIcon from "vue-material-design-icons/AccountGroup.vue";
 import DotsVerticalIcon from "vue-material-design-icons/DotsVertical.vue";
 import MagnifyIcon from "vue-material-design-icons/Magnify.vue";
 import { useUserStore } from "../store/user-store";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, toRefs } from "vue";
 import { useRouter } from "vue-router";
+
+const { userInfo, logout, getAllUsers, getAllChatsByUser } = useUserStore();
+const { showFindFiends, userDataForChat } = toRefs(useUserStore());
+console.log(userDataForChat.value);
 
 const router = useRouter();
 
-let open = ref(true);
-let showFindFiends = ref(false);
-
-onMounted(() => {
+onMounted(async () => {
   try {
     console.log("mount");
     getAllUsers();
+    await getAllChatsByUser();
   } catch (error) {
     console.log(error);
   }
@@ -93,6 +96,4 @@ const handlelogout = () => {
   if (res) logout();
   router.push("/login");
 };
-
-const { userInfo, logout, getAllUsers } = useUserStore();
 </script>
